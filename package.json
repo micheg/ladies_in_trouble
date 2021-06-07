@@ -1,0 +1,59 @@
+{
+    "name": "phaser3_lady_in_trouble",
+    "version": "1.0.0",
+    "description": "A simple game with phaserjs for kaios",
+    "scripts": {
+        "dev": "parcel src/index.dev.html -p 8080",
+        "build": "parcel build src/index.html --out-dir dist --no-source-maps",
+        "make_zip": "npm run build && touch ladies.zip && rm ladies.zip && cd dist && zip -r ../ladies.zip * && cd ..",
+        "deploy": "npm run build && gdeploy install ./dist"
+    },
+    "author": "micheg",
+    "keywords": [
+        "phaser",
+        "phaser3",
+        "phaser-game"
+    ],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/micheg/ladies"
+    },
+    "homepage": "kaios.michelangelog.com",
+    "devDependencies": {
+        "parcel-bundler": "^1.12.5",
+        "parcel-plugin-clean-easy": "^1.0.2",
+        "parcel-plugin-html-externals": "^0.3.0",
+        "parcel-plugin-static-files-copy": "^2.6.0"
+    },
+    "dependencies": {
+        "phaser": "^3.55.2"
+    },
+    "parcelCleanPaths": [
+        "dist"
+    ],
+    "staticFiles": {
+        "staticPath": [
+            {
+                "staticPath": "src/assets",
+                "watcherGlob": "**"
+            },
+            {
+                "staticPath": "src/manifest.webapp"
+            },
+            {
+                "staticPath": "src/ads/kaiads.v4.min.js",
+                "staticOutDir": "ads"
+            },
+            {
+                "staticPath": "src/build",
+                "watcherGlob": "**",
+                "staticOutDir": "build"
+            }
+        ]
+    },
+    "externals": {
+        "ads/**/*": false,
+        "build/**/*": false
+    }
+}
