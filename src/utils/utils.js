@@ -1,13 +1,23 @@
 import { INITIL_SCORES } from '../cfg/cfg';
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
-import { IMG } from '../cfg/assets';
+import { IMG, LVL } from '../cfg/assets';
 
 let module = {};
+module.rand = (items) =>
+{
+    return items[~~(items.length * Math.random())];
+};
 
-module.isString = (value)  =>
+module.is_string = (value)  =>
 {
 	return typeof value === 'string' || value instanceof String;
-}
+};
+
+module.is_function = (functionToCheck) =>
+{
+    return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+};
+
 module.scores_load = () =>
 {
     let scores = localStorage.getItem('scores');
@@ -44,16 +54,16 @@ module.make_bottom_hud = (scene, left=null, right=null) =>
 {
     // bottom black rectangle 16*width
     let l=null, r=null;
-    scene.add.rectangle(CENTER_X, HEIGHT - 8, WIDTH, 16, 0x000000, 1);
-    if( left !== null && module.isString(left) )
+    scene.add.rectangle(CENTER_X, HEIGHT - 12, WIDTH, 24, 0x000000, 1);
+    if( left !== null && module.is_string(left) )
     {
-        l = scene.add.bitmapText(8, HEIGHT - 14, IMG.FONT, left, 16);
+        l = scene.add.bitmapText(8, HEIGHT - 18, IMG.FONT, left, 20);
     }
-    if( right !== null && module.isString(right) )
+    if( right !== null && module.is_string(right) )
     {
         window.$R = right
-        const len = right.length * 8;
-        r = scene.add.bitmapText(WIDTH - len, HEIGHT - 14, IMG.FONT, right, 16);
+        const len = right.length * 10;
+        r = scene.add.bitmapText(WIDTH - len, HEIGHT - 18, IMG.FONT, right, 20);
     }
     return [l,r];
 };
@@ -64,11 +74,18 @@ module.make_bottom_bar = (scene, obj_conf) =>
     const right = ('right_text' in obj_conf) ? obj_conf.right_text : null;
     const bar = ('bottom_bar' in obj_conf) ? obj_conf.bottom_bar : null;
     let l=null, r=null;
-    [l,r] = module.make_bottom_hud(scene, left, right);
+    if(obj_conf.invisible && obj_conf.invisible === true)
+    {
+        
+    }
+    else
+    {
+        [l,r] = module.make_bottom_hud(scene, left, right);
+    }
 
     if(bar !== null && bar)
     {
-        scene.add.rectangle(CENTER_X, HEIGHT - 16, WIDTH, 2, 0xffffff);
+        scene.add.rectangle(CENTER_X, HEIGHT - 23, WIDTH, 2, 0xffffff);
     }
     scene.input.keyboard.on( 'keydown', (e) =>
     {
@@ -77,6 +94,10 @@ module.make_bottom_bar = (scene, obj_conf) =>
             case 'SoftLeft':
                 if( 'left_scene' in obj_conf )
                 {
+                    if( module.is_function(obj_conf.before_switch) )
+                    {
+                        obj_conf.before_switch();
+                    }
                     scene.scene.pause();
                     scene.scene.start(obj_conf.left_scene);
                 }
@@ -84,6 +105,10 @@ module.make_bottom_bar = (scene, obj_conf) =>
             case 'SoftRight':
                 if( 'right_scene' in obj_conf )
                 {
+                    if( module.is_function(obj_conf.before_switch) )
+                    {
+                        obj_conf.before_switch();
+                    }
                     scene.scene.pause();
                     scene.scene.start(obj_conf.right_scene);
                 }
@@ -117,6 +142,18 @@ module.make_scene_text = (scene, arr_of_str) =>
         scene.add.bitmapText(CENTER_X, CENTER_Y + 20*idx, IMG.FONT, txt, 20)
             .setOrigin(0.5, 0.5);
     });
+};
+
+module.get_random_lvl = () =>
+{
+    const _r = module.rand([LVL.A, LVL.B, LVL.D, LVL.E, LVL.F]);
+    console.log('rand is => ' + _r);
+    return _r;
+};
+
+module.get_random_tile_set = () =>
+{
+    return module.rand([IMG.TILES_A, IMG.TILES_B]);
 };
 
 export default module;

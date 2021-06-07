@@ -1,4 +1,4 @@
-
+import Phaser from 'phaser'
 
 export const WIDTH = 240;
 export const HEIGHT = 320;
@@ -34,7 +34,7 @@ export const PLAYER =
     SPEED:
     {
         x: 120,
-        y: 240
+        y: 260
     }
 };
 export const GAME = 

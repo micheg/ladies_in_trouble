@@ -1,5 +1,5 @@
 import { WIDTH, HEIGHT } from '../cfg/cfg';
-import { IMG, SND } from '../cfg/assets';
+import { IMG, SND, LVL } from '../cfg/assets';
 import Phaser from 'phaser'
 
 export default class BootScene extends Phaser.Scene
@@ -47,6 +47,15 @@ export default class BootScene extends Phaser.Scene
         this.load.image(IMG.GROUND, 'img/platform.png');
         this.load.image(IMG.SCORE_BG, 'img/score_bg.png');
         this.load.image(IMG.LOGO, 'img/ladies_logo.png');
+        this.load.image(IMG.TILES, 'img/tiles.png');
+        this.load.image(IMG.TILES_A, 'img/tiles.png');
+        this.load.image(IMG.TILES_B, 'img/tiles2.png');
+
+        this.load.tilemapTiledJSON(LVL.A, 'lvl/level_a.json');
+        this.load.tilemapTiledJSON(LVL.B, 'lvl/level_b.json');
+        this.load.tilemapTiledJSON(LVL.D, 'lvl/level_d.json');
+        this.load.tilemapTiledJSON(LVL.E, 'lvl/level_e.json');
+        this.load.tilemapTiledJSON(LVL.F, 'lvl/level_f.json');
 
         this.load.spritesheet(IMG.MELISSA, 'img/melissa.png',
         {
