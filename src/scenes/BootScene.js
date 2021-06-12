@@ -41,13 +41,9 @@ export default class BootScene extends Phaser.Scene
 
         // load images and sprites
         this.load.image(IMG.SKY, 'img/sky.png');
-        this.load.image(IMG.STAR, 'img/star.png');
-        this.load.image(IMG.RED_STAR, 'img/red_star.png');
-        this.load.image(IMG.BOMB, 'img/bomb.png');
-        this.load.image(IMG.GROUND, 'img/platform.png');
+        this.load.image(IMG.STAR, 'img/g.png');
         this.load.image(IMG.SCORE_BG, 'img/score_bg.png');
         this.load.image(IMG.LOGO, 'img/ladies_logo.png');
-        this.load.image(IMG.TILES, 'img/tiles.png');
         this.load.image(IMG.TILES_A, 'img/tiles.png');
         this.load.image(IMG.TILES_B, 'img/tiles2.png');
         this.load.image(IMG.TILES_C, 'img/tiles3.png');
@@ -59,11 +55,40 @@ export default class BootScene extends Phaser.Scene
         this.load.tilemapTiledJSON(LVL.F, 'lvl/level_f.json');
         this.load.tilemapTiledJSON(LVL.Z, 'lvl/a_level.json');
 
+        // player melissa
         this.load.spritesheet(IMG.PLAYER_A, 'img/player_a.png',
         {
             frameWidth: 24, frameHeight: 32
         });
+        
+        this.load.spritesheet(IMG.PLAYER_B, 'img/player_b.png',
+        {
+            frameWidth: 24, frameHeight: 32
+        });
 
+        // coin 
+        this.load.spritesheet(IMG.COIN, 'img/coin.png',
+        {
+            frameWidth: 16, frameHeight: 16
+        });
+
+        // bee
+        this.load.spritesheet(IMG.BEE_A, 'img/bee_a.png',
+        {
+            frameWidth: 24, frameHeight: 24
+        });
+
+        // bee
+        this.load.spritesheet(IMG.BEE_B, 'img/bee_b.png',
+        {
+            frameWidth: 24, frameHeight: 24
+        });
+
+        // devil
+        this.load.spritesheet(IMG.DEVIL_A, 'img/devil_a.png',
+        {
+            frameWidth: 44, frameHeight: 28
+        });
         // load fonts
         this.load.bitmapFont('pixelFont', 'font/font.png', 'font/font.xml');
 

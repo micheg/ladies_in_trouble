@@ -1,7 +1,8 @@
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
-import { IMG, LVL, SND } from '../cfg/assets';
+import { IMG, LVL, SND, spawn_point } from '../cfg/assets';
 import Utils from '../utils/utils';
 import Phaser from 'phaser'
+import BeeSpawner from '../utils/BeeSpawner';
 
 export default class GameScene extends Phaser.Scene
 {
@@ -10,6 +11,7 @@ export default class GameScene extends Phaser.Scene
         super('game-scene');
         this.player = undefined;
         this.cursors = undefined;
+        this.devil = undefined;
     }
 
     create()
@@ -26,11 +28,39 @@ export default class GameScene extends Phaser.Scene
 
         // game actors
         this.player = this.create_player();
+        
+        this.coin = this.create_coin();
+        this.coin.play('idle', true);
+
+        // da bomb!
+        this.bee_spawner = new BeeSpawner(this, Utils.get_random_bee());
+        const bee_group = this.bee_spawner.group
 
         // collision with platform
         this.physics.add.collider(this.player, platforms);
 
+        this.physics.add.collider(bee_group, platforms, (bee, platform) =>
+        {
+            if(bee.body.velocity.x >= 0)
+            {
+                bee.setFlipX(true);
+            }
+            else
+            {
+                bee.setFlipX(false);
+            }
+        }, null, this);
+
+        this.physics.add.collider(bee_group, fire, (bee, _f) =>
+        {
+            bee.x = 120;
+            bee.y = -10;
+            bee.body.velocity.y = 20;
+        }, null, this);
+
+        this.physics.add.collider(this.player, bee_group, this.hit_bee, null, this);
         this.physics.add.collider(this.player, fire, this.hit_fire, null, this);
+        this.physics.add.overlap(this.player, this.coin, this.hit_coin, null, this);
         // input
         this.cursors = this.input.keyboard.createCursorKeys();
         // hud
@@ -38,6 +68,25 @@ export default class GameScene extends Phaser.Scene
         this.create_kaios_menu();
         this.create_kaios_keys();
 
+        this.counter = 10;
+        this.timer = this.time.addEvent(
+        {
+            delay: 9000,
+            callback: () =>
+            {
+                this.devil = this.create_enemy();
+                this.physics.add.collider(this.devil, platforms);
+                this.physics.add.collider(this.devil, fire, (devil, fire) =>
+                {
+                    devil.disableBody(true, true);
+                    this.devil = devil;
+                }, null, this);
+                window.$D = this.devil;
+            },
+            callbackScope: this,
+            loop: true,
+            paused: false
+        });
     }
 
     create_map()
@@ -96,9 +145,34 @@ export default class GameScene extends Phaser.Scene
         this.kaios_keyboard.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
     }
 
+    add_coin()
+    {
+        const pos = Utils.get_random_coin_position((this.player.x >= 120) ? 'L': 'R');
+        const dt =  Phaser.Math.Between(500, 2500);
+        let timer = this.time.delayedCall(dt, () =>
+        {
+            this.coin.enableBody(true, pos.x, pos.y, true, true);
+        }, null, this);
+    }
+    create_coin()
+    {
+        const pos = Utils.get_random_coin_position();
+        //const coin = this.physics.add.sprite(pos.x, pos.y, IMG.COIN);
+        const coin = this.physics.add.staticSprite(pos.x, pos.y, IMG.COIN);
+        coin.setCircle(8);
+        this.anims.create(
+        {
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers(IMG.COIN, { start: 0, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        return coin;
+    }
     create_player()
     {
-        const player = this.physics.add.sprite(30, HEIGHT-60, IMG.PLAYER_A);
+        const key = Utils.get_random_player();
+        const player = this.physics.add.sprite(30, HEIGHT-60, key);
         player.body.setSize(18,28,true);
         player.setBounce(0.2)
         player.setCollideWorldBounds(true)
@@ -106,7 +180,7 @@ export default class GameScene extends Phaser.Scene
         this.anims.create(
         {
             key: 'walk',
-            frames: this.anims.generateFrameNumbers(IMG.PLAYER_A, { start: 0, end: 3 }),
+            frames: this.anims.generateFrameNumbers(key, { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
@@ -114,7 +188,7 @@ export default class GameScene extends Phaser.Scene
         this.anims.create(
         {
             key: 'turn',
-            frames: [ { key: IMG.PLAYER_A, frame: 4 } ],
+            frames: [ { key: key, frame: 4 } ],
             frameRate: 20
         });
         
@@ -161,11 +235,10 @@ export default class GameScene extends Phaser.Scene
 
     hit_fire()
     {
-        console.log("fire!");
         this.game_over_fn(true);
     }
 
-    update()
+    update(dt)
     {
         if(!this.game_over)
         {
@@ -191,7 +264,62 @@ export default class GameScene extends Phaser.Scene
         }
         this.game_over = true;
         this.add.bitmapText(CENTER_X, CENTER_Y, IMG.FONT, 'GAME OVER!', 40, 1).setOrigin(0.5, 0.5);
-        var timer = this.time.delayedCall(2000, this.game_over_action, null, this);
+        let timer = this.time.delayedCall(3000, this.game_over_action, null, this);
+    }
+
+    hit_coin(player, coin)
+    {
+        coin.disableBody(true, true);
+        this.events.emit('add.score');
+        const cur_scores = this.scene.get('hud-scene').get_score();
+        if(parseInt(cur_scores,10) % 50 === 0)
+        {
+            this.events.emit('add.level');
+            let bee = this.bee_spawner.spawn(player.x);
+            if(this.audio_is_on) this.sounds.beam.play();
+        }
+        this.add_coin();
+    }
+
+    hit_bee(player, bee)
+    {
+        //this.game_over_fn();
+    }
+
+    create_enemy()
+    {
+        let devil = null;
+        let sign = 1;
+        if(this.devil === undefined)
+        {
+            const key = IMG.DEVIL_A;
+            devil = this.physics.add.sprite(120, -10, key);
+            devil.body.setCircle(12,10,2)
+            //devil.setBounce(0.2)
+            devil.setBounceX(1);
+            devil.setCollideWorldBounds(true)
+            sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
+            devil.setVelocityX(40 * sign);
+            this.anims.create(
+            {
+                key: 'dwalk',
+                frames: this.anims.generateFrameNumbers(key, { start: 0, end: 4 }),
+                frameRate: 10,
+                repeat: -1
+            });
+            devil.anims.play('dwalk');
+        }
+        else
+        {
+            devil = this.devil;
+            if(!devil.active)
+            {
+                devil.enableBody(true, 120, -10, true, true);
+                sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
+                devil.setVelocityX(40 * sign);
+            }
+        }
+        return devil;
     }
 
     game_over_action()

@@ -1,18 +1,20 @@
 export const IMG = 
 {
-    GROUND: 'ground',
-    BOMB: 'bomb',
     SKY: 'sky',
     STAR: 'star',
-    PLAYER_A: 'player_a',
     FONT: 'pixelFont',
-    RED_STAR: 'red_star',
     LOGO: 'ladies_logo',
     SCORE_BG: 'score_bg',
-    TILES: 'tiles',
     TILES_A: 'tiles_a',
     TILES_B: 'tiles_b',
-    TILES_C: 'tiles_c'
+    TILES_C: 'tiles_c',
+    PLAYER_A: 'player_a',
+    PLAYER_B: 'player_B',
+    DEVIL_A: 'devil_a',
+    DEVIL_B: 'devil_b',
+    COIN: 'coin',
+    BEE_A: 'bee_a',
+    BEE_B: 'bee_B',
 };
 
 export const SND =
@@ -35,3 +37,22 @@ export const LVL =
     Z: 'level_z'
 };
 
+export const spawn_point = 
+[
+    {
+        x: 36,
+        y: 46
+    },
+    {
+        x: 200,
+        y: 46
+    },
+    {
+        x: 36,
+        y: 140
+    },
+    {
+        x: 200,
+        y: 140
+    },
+];

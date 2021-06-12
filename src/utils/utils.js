@@ -1,6 +1,6 @@
 import { INITIL_SCORES } from '../cfg/cfg';
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
-import { IMG, LVL } from '../cfg/assets';
+import { IMG, LVL, spawn_point } from '../cfg/assets';
 
 let module = {};
 module.rand = (items) =>
@@ -154,6 +154,32 @@ module.get_random_lvl = () =>
 module.get_random_tile_set = () =>
 {
     return module.rand([IMG.TILES_A, IMG.TILES_B, IMG.TILES_C]);
+};
+
+module.get_random_coin_position = (dir=null) =>
+{
+    if( dir === null )
+    {
+        return module.rand(spawn_point);
+    }
+    if( dir === 'L' )
+    {
+        return module.rand([spawn_point[0], spawn_point[2]]);
+    }
+    if( dir === 'R' )
+    {
+        return module.rand([spawn_point[1], spawn_point[3]]);
+    }
+};
+
+module.get_random_bee = () =>
+{
+    return module.rand([IMG.BEE_A, IMG.BEE_B]);
+};
+
+module.get_random_player = () =>
+{
+    return module.rand([IMG.PLAYER_A, IMG.PLAYER_B]);
 };
 
 export default module;
