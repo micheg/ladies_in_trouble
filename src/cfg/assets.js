@@ -4,14 +4,15 @@ export const IMG =
     BOMB: 'bomb',
     SKY: 'sky',
     STAR: 'star',
-    MELISSA: 'melissa',
+    PLAYER_A: 'player_a',
     FONT: 'pixelFont',
     RED_STAR: 'red_star',
     LOGO: 'ladies_logo',
     SCORE_BG: 'score_bg',
     TILES: 'tiles',
     TILES_A: 'tiles_a',
-    TILES_B: 'tiles_b'
+    TILES_B: 'tiles_b',
+    TILES_C: 'tiles_c'
 };
 
 export const SND =
@@ -30,6 +31,7 @@ export const LVL =
     C: 'level_c',
     D: 'level_d',
     E: 'level_e',
-    F: 'level_f'
+    F: 'level_f',
+    Z: 'level_z'
 };
 

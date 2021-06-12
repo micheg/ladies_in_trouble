@@ -1,5 +1,5 @@
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
-import { IMG, SND } from '../cfg/assets';
+import { IMG, LVL, SND } from '../cfg/assets';
 import Utils from '../utils/utils';
 import Phaser from 'phaser'
 
@@ -16,17 +16,21 @@ export default class GameScene extends Phaser.Scene
     {
         this.game_over = false;
         // ui
-        //this.create_background();
+        this.create_background();
         this.create_audio();
         this.audio_is_on = Utils.audio_is_on();
 
+        // create map
+        let platforms, fire;
+        [platforms, fire]  = this.create_map();
+
         // game actors
         this.player = this.create_player();
-        // create map
-        const platforms = this.create_map();
 
         // collision with platform
         this.physics.add.collider(this.player, platforms);
+
+        this.physics.add.collider(this.player, fire, this.hit_fire, null, this);
         // input
         this.cursors = this.input.keyboard.createCursorKeys();
         // hud
@@ -38,12 +42,15 @@ export default class GameScene extends Phaser.Scene
 
     create_map()
     {
-        const map = this.make.tilemap({ key: Utils.get_random_lvl() });
-        //const tileset = map.addTilesetImage(Utils.get_random_tile_set(), 'tiles');
+        //const map = this.make.tilemap({ key: Utils.get_random_lvl() });
+        const map = this.make.tilemap({ key: LVL.Z });
         const tileset = map.addTilesetImage('tiles', Utils.get_random_tile_set());
-        const platforms = map.createLayer('level', tileset, 0, 10);
+        const platforms = map.createLayer('level', tileset, 0, 8);
+        const bg = map.createLayer('bg', tileset, 0, 8);
+        const fire = map.createLayer('danger', tileset, 0, 8);
         platforms.setCollisionByExclusion(-1, true);
-        return platforms;
+        fire.setCollisionByExclusion(-1, true);
+        return [platforms, fire];
     }
 
     create_audio()
@@ -91,15 +98,15 @@ export default class GameScene extends Phaser.Scene
 
     create_player()
     {
-        const player = this.physics.add.sprite(30, HEIGHT-60, IMG.MELISSA);
+        const player = this.physics.add.sprite(30, HEIGHT-60, IMG.PLAYER_A);
         player.body.setSize(18,28,true);
         player.setBounce(0.2)
         player.setCollideWorldBounds(true)
 
         this.anims.create(
         {
-            key: 'left',
-            frames: this.anims.generateFrameNumbers(IMG.MELISSA, { start: 0, end: 3 }),
+            key: 'walk',
+            frames: this.anims.generateFrameNumbers(IMG.PLAYER_A, { start: 0, end: 3 }),
             frameRate: 10,
             repeat: -1
         });
@@ -107,17 +114,10 @@ export default class GameScene extends Phaser.Scene
         this.anims.create(
         {
             key: 'turn',
-            frames: [ { key: IMG.MELISSA, frame: 4 } ],
+            frames: [ { key: IMG.PLAYER_A, frame: 4 } ],
             frameRate: 20
         });
         
-        this.anims.create(
-        {
-            key: 'right',
-            frames: this.anims.generateFrameNumbers(IMG.MELISSA, { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
         return player;
     }
 
@@ -136,12 +136,14 @@ export default class GameScene extends Phaser.Scene
         if (this.cursors.left.isDown || this.kaios_keyboard.left.isDown)
         {
             this.player.setVelocityX(-PLAYER.SPEED.x);
-            this.player.anims.play('left', true);
+            this.player.setFlipX(false);
+            this.player.anims.play('walk', true);
         }
         else if (this.cursors.right.isDown || this.kaios_keyboard.right.isDown)
         {
             this.player.setVelocityX(PLAYER.SPEED.x);
-            this.player.anims.play('right', true);
+            this.player.setFlipX(true);
+            this.player.anims.play('walk', true);
         }
         else
         {
@@ -157,6 +159,12 @@ export default class GameScene extends Phaser.Scene
         }
     }
 
+    hit_fire()
+    {
+        console.log("fire!");
+        this.game_over_fn(true);
+    }
+
     update()
     {
         if(!this.game_over)
@@ -169,6 +177,21 @@ export default class GameScene extends Phaser.Scene
     get_cur_level()
     {
         return this.scene.get('hud-scene').get_level();
+    }
+
+    game_over_fn(fired=true)
+    {
+        if(this.audio_is_on) this.sounds.over.play();
+        this.physics.pause();
+        if(fired)
+        {
+            this.player.setTint(0xff0000);
+            this.player.anims.play('turn');
+            this.player.setFlip(true, true);
+        }
+        this.game_over = true;
+        this.add.bitmapText(CENTER_X, CENTER_Y, IMG.FONT, 'GAME OVER!', 40, 1).setOrigin(0.5, 0.5);
+        var timer = this.time.delayedCall(2000, this.game_over_action, null, this);
     }
 
     game_over_action()

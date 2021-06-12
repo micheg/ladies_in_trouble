@@ -147,13 +147,13 @@ module.make_scene_text = (scene, arr_of_str) =>
 module.get_random_lvl = () =>
 {
     const _r = module.rand([LVL.A, LVL.B, LVL.D, LVL.E, LVL.F]);
-    console.log('rand is => ' + _r);
-    return _r;
+    //return _r;
+    return LVL.Z;
 };
 
 module.get_random_tile_set = () =>
 {
-    return module.rand([IMG.TILES_A, IMG.TILES_B]);
+    return module.rand([IMG.TILES_A, IMG.TILES_B, IMG.TILES_C]);
 };
 
 export default module;

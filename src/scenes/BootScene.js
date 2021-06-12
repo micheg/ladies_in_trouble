@@ -50,14 +50,16 @@ export default class BootScene extends Phaser.Scene
         this.load.image(IMG.TILES, 'img/tiles.png');
         this.load.image(IMG.TILES_A, 'img/tiles.png');
         this.load.image(IMG.TILES_B, 'img/tiles2.png');
+        this.load.image(IMG.TILES_C, 'img/tiles3.png');
 
         this.load.tilemapTiledJSON(LVL.A, 'lvl/level_a.json');
         this.load.tilemapTiledJSON(LVL.B, 'lvl/level_b.json');
         this.load.tilemapTiledJSON(LVL.D, 'lvl/level_d.json');
         this.load.tilemapTiledJSON(LVL.E, 'lvl/level_e.json');
         this.load.tilemapTiledJSON(LVL.F, 'lvl/level_f.json');
+        this.load.tilemapTiledJSON(LVL.Z, 'lvl/a_level.json');
 
-        this.load.spritesheet(IMG.MELISSA, 'img/melissa.png',
+        this.load.spritesheet(IMG.PLAYER_A, 'img/player_a.png',
         {
             frameWidth: 24, frameHeight: 32
         });
