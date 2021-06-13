@@ -29,7 +29,7 @@ export default class BeeSpawner
         const MIDDLE = WIDTH / 2;
         //const x = (playerX < MIDDLE) ? Phaser.Math.Between(MIDDLE, WIDTH) : Phaser.Math.Between(0, MIDDLE);
 
-        const bee = this.group.create(120, -10, this.key);
+        const bee = this.group.create(120, -20, this.key);
         // this is a circular body and this is the radius
         bee.setCircle(12);
         bee.setBounce(1);

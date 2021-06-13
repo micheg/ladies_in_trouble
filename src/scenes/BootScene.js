@@ -124,5 +124,4 @@ export default class BootScene extends Phaser.Scene
         this.scene.launch('bgm-scene');
         this.scene.start('start-scene');
     }
-
 }

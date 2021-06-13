@@ -64,7 +64,6 @@ module.make_bottom_hud = (scene, left=null, right=null) =>
     }
     if( right !== null && module.is_string(right) )
     {
-        window.$R = right
         const len = right.length * 10;
         r = scene.add.bitmapText(WIDTH - len, HEIGHT - 18, IMG.FONT, right, 20);
     }
@@ -215,7 +214,12 @@ module.get_ads = (cb) =>
         app: APP_NAME,
         slot: SLOT,
         test: window.build.test_mode,
-        onerror: err => console.error('Custom catch:', err),
+        timeout: 10*1000,
+        onerror: err =>
+        {
+            console.error('Custom catch:', err);
+            cb();
+        },
         onready: ad =>
         {
             ad.call('display');
@@ -229,7 +233,5 @@ module.put_exit_message = (scene) =>
     scene.add.bitmapText(CENTER_X, CENTER_Y -15, IMG.FONT, 'PRESS AGAIN TO EXIT', 20, 1).setOrigin(0.5, 0.5);
     scene.add.bitmapText(CENTER_X, CENTER_Y +15, IMG.FONT, 'or LEFT or RIGHT to CANCEL', 20, 1).setOrigin(0.5, 0.5);
 };
-
-window.$U = module;
 
 export default module;

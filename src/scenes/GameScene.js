@@ -16,11 +16,13 @@ export default class GameScene extends Phaser.Scene
 
     create()
     {
+        window.$T = this;
+        // state
         this.game_over = false;
+        this.audio_is_on = Utils.audio_is_on();
         // ui
         this.create_background();
         this.create_audio();
-        this.audio_is_on = Utils.audio_is_on();
 
         // create map
         let platforms, fire;
@@ -29,10 +31,11 @@ export default class GameScene extends Phaser.Scene
         // game actors
         this.player = this.create_player();
         
+        // items
         this.coin = this.create_coin();
         this.coin.play('idle', true);
 
-        // da bomb!
+        // enemies
         this.bee_spawner = new BeeSpawner(this, Utils.get_random_bee());
         const bee_group = this.bee_spawner.group
 
@@ -81,6 +84,12 @@ export default class GameScene extends Phaser.Scene
             this.game_over_fn(true);
         }, null, this);
 
+        this.physics.add.collider(this.devil, bee_group, (devil, bee) =>
+        {
+            devil.setVelocityX((devil.velocity > 0) ? -40 : 40);
+            bee.destroy();
+        }, null, this);
+
         // input
         this.cursors = this.input.keyboard.createCursorKeys();
         // hud
@@ -91,7 +100,7 @@ export default class GameScene extends Phaser.Scene
         this.counter = 10;
         this.timer = this.time.addEvent(
         {
-            delay: 9000,
+            delay: 11000,
             callback: () =>
             {
                 this.re_enable_devil();
@@ -278,23 +287,29 @@ export default class GameScene extends Phaser.Scene
     hit_coin(player, coin)
     {
         coin.disableBody(true, true);
+        if(this.audio_is_on) this.sounds.pickup.play();
         this.events.emit('add.score');
         const cur_scores = this.scene.get('hud-scene').get_score();
         if(parseInt(cur_scores,10) % 70 === 0)
         {
             this.events.emit('add.level');
-            let bee = this.bee_spawner.spawn(player.x);
-            if(this.audio_is_on) this.sounds.beam.play();
+            for(let i=0; i < this.get_cur_level() - 1; i++)
+            {
+                this.bee_spawner.spawn(player.x);
+                if(this.audio_is_on) this.sounds.beam.play();
+            }
         }
         this.add_coin();
     }
 
     re_enable_devil()
     {
+        let sign = (this.player.x > 120) ? 1 : -1;
+        //if(this.player.x > 120) sign = -1
         if(!this.devil.active)
         {
             this.devil.enableBody(true, 120, -10, true, true);
-            let sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
+            //let sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
             this.devil.setVelocityX(40 * sign);
         }
     }
