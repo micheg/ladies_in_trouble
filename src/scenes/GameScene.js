@@ -272,7 +272,7 @@ export default class GameScene extends Phaser.Scene
         }
         this.game_over = true;
         this.add.bitmapText(CENTER_X, CENTER_Y, IMG.FONT, 'GAME OVER!', 40, 1).setOrigin(0.5, 0.5);
-        let timer = this.time.delayedCall(3000, this.game_over_action, null, this);
+        let timer = this.time.delayedCall(2000, this.game_over_action, null, this);
     }
 
     hit_coin(player, coin)
@@ -329,7 +329,10 @@ export default class GameScene extends Phaser.Scene
         scores = scores.slice(0, 10);
         Utils.scores_save(scores);
         //this.timer.destroy();
-        this.scene.stop();
-        this.scene.start('score-scene');
+        Utils.get_ads(()=>
+        {
+            this.scene.stop();
+            this.scene.start('score-scene');
+        });
     }
 }

@@ -1,4 +1,5 @@
 window.build =
 {
-    target: 'dev'
+    target: 'dev',
+    test_mode: 1
 };

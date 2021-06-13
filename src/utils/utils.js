@@ -1,4 +1,5 @@
 import { INITIL_SCORES } from '../cfg/cfg';
+import { PID, APP_NAME, SLOT } from '../cfg/cfg';
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
 import { IMG, LVL, spawn_point } from '../cfg/assets';
 
@@ -180,6 +181,23 @@ module.get_random_bee = () =>
 module.get_random_player = () =>
 {
     return module.rand([IMG.PLAYER_A, IMG.PLAYER_B]);
+};
+
+module.get_ads = (cb) =>
+{
+    getKaiAd(
+    {
+        publisher: PID,
+        app: APP_NAME,
+        slot: SLOT,
+        test: window.build.test_mode,
+        onerror: err => console.error('Custom catch:', err),
+        onready: ad =>
+        {
+            ad.call('display');
+            ad.on('close', cb)
+        }
+    });
 };
 
 export default module;

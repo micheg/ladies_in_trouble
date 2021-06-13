@@ -46,3 +46,7 @@ export const GAME =
 };
 
 export const INITIL_SCORES = [100,100,100,100,100,100,100,100,100, 100];
+
+export const PID = '255d9577-2136-402a-b1d6-3277d269ac6a';
+export const APP_NAME = 'Ladies in a Box';
+export const SLOT = 'com.michelangelog.kaios.ladies';
