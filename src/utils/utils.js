@@ -170,7 +170,6 @@ module.make_scene_text = (scene, arr_of_str) =>
 
 module.get_random_lvl = () =>
 {
-    return LVL.A;
     return module.rand([LVL.A, LVL.B, LVL.C, LVL.D]);
 };
 
