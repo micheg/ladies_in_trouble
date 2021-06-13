@@ -3,6 +3,8 @@ import { PID, APP_NAME, SLOT } from '../cfg/cfg';
 import { WIDTH, HEIGHT, CENTER_X, CENTER_Y, PLAYER } from '../cfg/cfg';
 import { IMG, LVL, spawn_point } from '../cfg/assets';
 
+window.is_exiting = false;
+
 let module = {};
 module.rand = (items) =>
 {
@@ -93,6 +95,11 @@ module.make_bottom_bar = (scene, obj_conf) =>
         switch (e.key)
         {
             case 'SoftLeft':
+                if(window.is_exiting)
+                {
+                    window.is_exiting = false;
+                    scene.resume();
+                }
                 if( 'left_scene' in obj_conf )
                 {
                     if( module.is_function(obj_conf.before_switch) )
@@ -104,6 +111,11 @@ module.make_bottom_bar = (scene, obj_conf) =>
                 }
                 break;
             case 'SoftRight':
+                if(window.is_exiting)
+                {
+                    window.is_exiting = false;
+                    scene.resume();
+                }
                 if( 'right_scene' in obj_conf )
                 {
                     if( module.is_function(obj_conf.before_switch) )
@@ -114,6 +126,18 @@ module.make_bottom_bar = (scene, obj_conf) =>
                     scene.scene.start(obj_conf.right_scene);
                 }
                 break;
+            case 'Backspace':
+                e.preventDefault();
+                if(!window.is_exiting)
+                {
+                    scene.scene.pause();
+                    window.is_exiting = true;
+                    module.put_exit_message(scene);
+                }
+                else
+                {
+                    window.close();
+                }
         }
     });
     return [l,r];
@@ -199,5 +223,13 @@ module.get_ads = (cb) =>
         }
     });
 };
+
+module.put_exit_message = (scene) =>
+{
+    scene.add.bitmapText(CENTER_X, CENTER_Y -15, IMG.FONT, 'PRESS AGAIN TO EXIT', 20, 1).setOrigin(0.5, 0.5);
+    scene.add.bitmapText(CENTER_X, CENTER_Y +15, IMG.FONT, 'or LEFT or RIGHT to CANCEL', 20, 1).setOrigin(0.5, 0.5);
+};
+
+window.$U = module;
 
 export default module;

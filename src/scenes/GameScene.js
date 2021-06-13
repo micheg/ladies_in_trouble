@@ -133,7 +133,7 @@ export default class GameScene extends Phaser.Scene
     create_kaios_menu()
     {
         // top header
-        this.add.rectangle(120, 4, 240, 8, 0x000000, 1);
+        this.add.rectangle(120, 4, 240, 9, 0x000000, 1);
         // bottom hud
         Utils.make_bottom_bar(this,
         {
@@ -280,7 +280,7 @@ export default class GameScene extends Phaser.Scene
         coin.disableBody(true, true);
         this.events.emit('add.score');
         const cur_scores = this.scene.get('hud-scene').get_score();
-        if(parseInt(cur_scores,10) % 100 === 0)
+        if(parseInt(cur_scores,10) % 70 === 0)
         {
             this.events.emit('add.level');
             let bee = this.bee_spawner.spawn(player.x);
