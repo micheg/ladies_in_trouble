@@ -12,7 +12,8 @@ export default class ScoreScene extends Phaser.Scene
 
     create_background()
     {
-        this.add.image(CENTER_X, CENTER_Y, IMG.SCORE_BG);
+        this.add.image(CENTER_X, CENTER_Y, IMG.SKY);
+        this.add.rectangle(CENTER_X, 18, WIDTH, 36, 0x000000, 1);
     }
 
     create()
@@ -46,7 +47,7 @@ export default class ScoreScene extends Phaser.Scene
 
     create_scores_ui()
     {
-        this.add.bitmapText(CENTER_X, 30, IMG.FONT, 'Top Ten Scores', 30, 1).setOrigin(0.5, 0.5);
+        this.add.bitmapText(CENTER_X, 20, IMG.FONT, 'Top Ten Scores', 30, 1).setOrigin(0.5, 0.5);
         let scores = Utils.scores_load();
         scores = scores.reverse();
         const start_point = HEIGHT - 70;
