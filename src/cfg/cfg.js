@@ -20,7 +20,7 @@ export default
         arcade:
         {
             gravity: { y: 320 },
-            debug: true
+            debug: false
         }
     },
     pixelArt: true

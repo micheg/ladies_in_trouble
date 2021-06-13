@@ -11,11 +11,11 @@ export default class AboutScene extends Phaser.Scene
     create()
     {
         // msg 
-        const msg1 = 'This little game is an adaptation';
-        const msg2 = 'of the official website tutorial'
-        const msg3 = 'for KaiOS devices';
+        const msg1 = 'This is super casual game';
+        const msg2 = 'GFX from: Master484'
+        const msg3 = 'SND from: Pascal Belisle';
         // ui
-        Utils.make_simple_title(this, 'instructions');
+        Utils.make_simple_title(this, 'About');
         Utils.make_scene_text(this, [msg1, msg2, msg3]);
 
         // keybind

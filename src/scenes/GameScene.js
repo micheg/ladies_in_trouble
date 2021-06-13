@@ -58,9 +58,29 @@ export default class GameScene extends Phaser.Scene
             bee.body.velocity.y = 20;
         }, null, this);
 
-        this.physics.add.collider(this.player, bee_group, this.hit_bee, null, this);
-        this.physics.add.collider(this.player, fire, this.hit_fire, null, this);
+        this.physics.add.collider(this.player, bee_group, () =>
+        {
+            this.game_over_fn(true);
+        }, null, this);
+        this.physics.add.collider(this.player, fire, () =>
+        {
+            this.game_over_fn(true);
+        }, null, this);
         this.physics.add.overlap(this.player, this.coin, this.hit_coin, null, this);
+
+        this.devil = this.create_enemy();
+        this.physics.add.collider(this.devil, platforms);
+
+        this.physics.add.collider(this.devil, fire, (devil, fire) =>
+        {
+            devil.disableBody(true, true);
+            this.devil = devil;
+        }, null, this);
+        this.physics.add.collider(this.devil, this.player, (devil, player) =>
+        {
+            this.game_over_fn(true);
+        }, null, this);
+
         // input
         this.cursors = this.input.keyboard.createCursorKeys();
         // hud
@@ -74,14 +94,7 @@ export default class GameScene extends Phaser.Scene
             delay: 9000,
             callback: () =>
             {
-                this.devil = this.create_enemy();
-                this.physics.add.collider(this.devil, platforms);
-                this.physics.add.collider(this.devil, fire, (devil, fire) =>
-                {
-                    devil.disableBody(true, true);
-                    this.devil = devil;
-                }, null, this);
-                window.$D = this.devil;
+                this.re_enable_devil();
             },
             callbackScope: this,
             loop: true,
@@ -233,11 +246,6 @@ export default class GameScene extends Phaser.Scene
         }
     }
 
-    hit_fire()
-    {
-        this.game_over_fn(true);
-    }
-
     update(dt)
     {
         if(!this.game_over)
@@ -272,7 +280,7 @@ export default class GameScene extends Phaser.Scene
         coin.disableBody(true, true);
         this.events.emit('add.score');
         const cur_scores = this.scene.get('hud-scene').get_score();
-        if(parseInt(cur_scores,10) % 50 === 0)
+        if(parseInt(cur_scores,10) % 100 === 0)
         {
             this.events.emit('add.level');
             let bee = this.bee_spawner.spawn(player.x);
@@ -281,44 +289,33 @@ export default class GameScene extends Phaser.Scene
         this.add_coin();
     }
 
-    hit_bee(player, bee)
+    re_enable_devil()
     {
-        //this.game_over_fn();
+        if(!this.devil.active)
+        {
+            this.devil.enableBody(true, 120, -10, true, true);
+            let sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
+            this.devil.setVelocityX(40 * sign);
+        }
     }
-
+    
     create_enemy()
     {
-        let devil = null;
-        let sign = 1;
-        if(this.devil === undefined)
+        const key = IMG.DEVIL_A;
+        let devil = this.physics.add.sprite(120, -10, key);
+        devil.body.setCircle(12,10,2)
+        //devil.setBounce(0.2)
+        devil.setBounceX(1);
+        devil.setCollideWorldBounds(true)
+        devil.setVelocityX(-40);
+        this.anims.create(
         {
-            const key = IMG.DEVIL_A;
-            devil = this.physics.add.sprite(120, -10, key);
-            devil.body.setCircle(12,10,2)
-            //devil.setBounce(0.2)
-            devil.setBounceX(1);
-            devil.setCollideWorldBounds(true)
-            sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
-            devil.setVelocityX(40 * sign);
-            this.anims.create(
-            {
-                key: 'dwalk',
-                frames: this.anims.generateFrameNumbers(key, { start: 0, end: 4 }),
-                frameRate: 10,
-                repeat: -1
-            });
-            devil.anims.play('dwalk');
-        }
-        else
-        {
-            devil = this.devil;
-            if(!devil.active)
-            {
-                devil.enableBody(true, 120, -10, true, true);
-                sign = Phaser.Math.Between(0,1) === 0 ? -1 : 1;
-                devil.setVelocityX(40 * sign);
-            }
-        }
+            key: 'dwalk',
+            frames: this.anims.generateFrameNumbers(key, { start: 0, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        devil.anims.play('dwalk');
         return devil;
     }
 
@@ -331,7 +328,8 @@ export default class GameScene extends Phaser.Scene
         scores = scores.sort((a,b) =>  b-a);
         scores = scores.slice(0, 10);
         Utils.scores_save(scores);
-        this.scene.pause();
+        //this.timer.destroy();
+        this.scene.stop();
         this.scene.start('score-scene');
     }
 }
