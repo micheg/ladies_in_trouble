@@ -114,7 +114,7 @@ export default class GameScene extends Phaser.Scene
     create_map()
     {
         //const map = this.make.tilemap({ key: Utils.get_random_lvl() });
-        const map = this.make.tilemap({ key: LVL.Z });
+        const map = this.make.tilemap({ key: Utils.get_random_lvl() });
         const tileset = map.addTilesetImage('tiles', Utils.get_random_tile_set());
         const platforms = map.createLayer('level', tileset, 0, 8);
         const bg = map.createLayer('bg', tileset, 0, 8);

@@ -170,9 +170,8 @@ module.make_scene_text = (scene, arr_of_str) =>
 
 module.get_random_lvl = () =>
 {
-    const _r = module.rand([LVL.A, LVL.B, LVL.D, LVL.E, LVL.F]);
-    //return _r;
-    return LVL.Z;
+    return LVL.A;
+    return module.rand([LVL.A, LVL.B, LVL.C, LVL.D]);
 };
 
 module.get_random_tile_set = () =>
