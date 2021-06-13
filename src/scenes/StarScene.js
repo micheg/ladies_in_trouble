@@ -15,6 +15,7 @@ export default class StartScene extends Phaser.Scene
 
     create()
     {
+        console.log("create");
         this.current_position = 0;
         // ui
         this.add.image(CENTER_X, CENTER_Y, IMG.SKY);
@@ -54,8 +55,8 @@ export default class StartScene extends Phaser.Scene
 
         // keybind
         this.startButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-        this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-        this.rightButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+        //this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+        //this.rightButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
 
 
         //  Create our keyboard controls.
@@ -95,7 +96,7 @@ export default class StartScene extends Phaser.Scene
                 this.parse_enter();
             }
         }
-        if (this.leftButton.isDown)
+        /*if (this.leftButton.isDown)
         {
             this.scene.pause();
             this.scene.start('about-scene');
@@ -104,7 +105,7 @@ export default class StartScene extends Phaser.Scene
         {
             this.scene.pause();
             this.scene.start('intro-scene');
-        }
+        }*/
     }
 
     update_keypad()

@@ -74,11 +74,6 @@ export default class GameScene extends Phaser.Scene
         this.devil = this.create_enemy();
         this.physics.add.collider(this.devil, platforms);
 
-        this.physics.add.collider(this.devil, fire, (devil, fire) =>
-        {
-            devil.disableBody(true, true);
-            this.devil = devil;
-        }, null, this);
         this.physics.add.collider(this.devil, this.player, (devil, player) =>
         {
             this.game_over_fn(true);
@@ -86,6 +81,7 @@ export default class GameScene extends Phaser.Scene
 
         this.physics.add.collider(this.devil, bee_group, (devil, bee) =>
         {
+            if(this.audio_is_on) this.sounds.beam.play();
             devil.setVelocityX((devil.velocity > 0) ? -40 : 40);
             bee.destroy();
         }, null, this);
@@ -113,7 +109,6 @@ export default class GameScene extends Phaser.Scene
 
     create_map()
     {
-        //const map = this.make.tilemap({ key: Utils.get_random_lvl() });
         const map = this.make.tilemap({ key: Utils.get_random_lvl() });
         const tileset = map.addTilesetImage('tiles', Utils.get_random_tile_set());
         const platforms = map.createLayer('level', tileset, 0, 8);
@@ -261,6 +256,10 @@ export default class GameScene extends Phaser.Scene
         {
             this.uodate_keybind();
             this.update_keycontrols();
+            if(this.devil !== null && this.devil.y > 305)
+            {
+                this.devil.disableBody(true, true);
+            }
         }
     }
 
@@ -321,7 +320,7 @@ export default class GameScene extends Phaser.Scene
         devil.body.setCircle(12,10,2)
         //devil.setBounce(0.2)
         devil.setBounceX(1);
-        devil.setCollideWorldBounds(true)
+        devil.setCollideWorldBounds(true);
         devil.setVelocityX(-40);
         this.anims.create(
         {

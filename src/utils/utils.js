@@ -93,11 +93,14 @@ module.make_bottom_bar = (scene, obj_conf) =>
     {
         switch (e.key)
         {
+            case 'q':
             case 'SoftLeft':
                 if(window.is_exiting)
                 {
                     window.is_exiting = false;
-                    scene.resume();
+                    module.remove_exit_message();
+                    return;
+                    //scene.resume();
                 }
                 if( 'left_scene' in obj_conf )
                 {
@@ -109,11 +112,13 @@ module.make_bottom_bar = (scene, obj_conf) =>
                     scene.scene.start(obj_conf.left_scene);
                 }
                 break;
+            case 'e':
             case 'SoftRight':
                 if(window.is_exiting)
                 {
                     window.is_exiting = false;
-                    scene.resume();
+                    module.remove_exit_message();
+                    return;
                 }
                 if( 'right_scene' in obj_conf )
                 {
@@ -125,11 +130,13 @@ module.make_bottom_bar = (scene, obj_conf) =>
                     scene.scene.start(obj_conf.right_scene);
                 }
                 break;
+            case "w":
             case 'Backspace':
                 e.preventDefault();
+                console.log("is exi " + window.is_exiting);
                 if(!window.is_exiting)
                 {
-                    scene.scene.pause();
+                    //scene.scene.pause();
                     window.is_exiting = true;
                     module.put_exit_message(scene);
                 }
@@ -170,7 +177,7 @@ module.make_scene_text = (scene, arr_of_str) =>
 
 module.get_random_lvl = () =>
 {
-    return module.rand([LVL.A, LVL.B, LVL.C, LVL.D]);
+    return module.rand([LVL.A, LVL.B, LVL.C, LVL.D, LVL.E]);
 };
 
 module.get_random_tile_set = () =>
@@ -228,8 +235,16 @@ module.get_ads = (cb) =>
 
 module.put_exit_message = (scene) =>
 {
-    scene.add.bitmapText(CENTER_X, CENTER_Y -15, IMG.FONT, 'PRESS AGAIN TO EXIT', 20, 1).setOrigin(0.5, 0.5);
-    scene.add.bitmapText(CENTER_X, CENTER_Y +15, IMG.FONT, 'or LEFT or RIGHT to CANCEL', 20, 1).setOrigin(0.5, 0.5);
+    window.r = scene.add.rectangle(CENTER_X, CENTER_Y, WIDTH, 50, 0x000000);
+    window.b1 = scene.add.bitmapText(CENTER_X, CENTER_Y -15, IMG.FONT, 'PRESS AGAIN TO EXIT', 20, 1).setOrigin(0.5, 0.5);
+    window.b2 = scene.add.bitmapText(CENTER_X, CENTER_Y +15, IMG.FONT, 'or LEFT or RIGHT to CANCEL', 20, 1).setOrigin(0.5, 0.5);
+};
+
+module.remove_exit_message = (scene) =>
+{
+    if(window.r && window.r.destroy) window.r.destroy();
+    if(window.b1 && window.b1.destroy) window.b1.destroy();
+    if(window.b2 && window.b2.destroy) window.b2.destroy();
 };
 
 export default module;

@@ -17,8 +17,6 @@ export default class AboutScene extends Phaser.Scene
         // ui
         Utils.make_simple_title(this, 'instructions');
         Utils.make_scene_text(this, [msg1, msg2, msg3]);
-        // keybind
-        this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
 
         Utils.make_bottom_bar(this,
         {
@@ -26,14 +24,5 @@ export default class AboutScene extends Phaser.Scene
             left_scene: 'start-scene',
             bottom_bar: true
         });
-
-    }
-
-    update()
-    {
-        if (this.leftButton.isDown)
-        {
-            this.scene.start('start-scene');
-        }
     }
 }
