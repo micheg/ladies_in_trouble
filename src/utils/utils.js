@@ -247,4 +247,22 @@ module.remove_exit_message = (scene) =>
     if(window.b2 && window.b2.destroy) window.b2.destroy();
 };
 
+module.do_screen_shot = (scene) =>
+{
+    function exportCanvasAsPNG(id, fileName, dataUrl)
+    {
+        var canvasElement = document.getElementById(id);
+        var MIME_TYPE = "image/png";
+        var imgURL = dataUrl;
+        var dlLink = document.createElement('a');
+        dlLink.download = fileName;
+        dlLink.href = imgURL;
+        dlLink.dataset.downloadurl = [MIME_TYPE, dlLink.download, dlLink.href].join(':');
+        document.body.appendChild(dlLink);
+        dlLink.click();
+        document.body.removeChild(dlLink);
+    }
+    scene.game.renderer.snapshot((image) => exportCanvasAsPNG('show','shot.png', image.src));
+};
+
 export default module;

@@ -12,6 +12,29 @@ export default class GameScene extends Phaser.Scene
         this.player = undefined;
         this.cursors = undefined;
         this.devil = undefined;
+
+        this.level_hash = {};
+        this.tile_hash = {};
+        // hash maps
+        this.level_hash[LVL.A] = 'lvl/a_level.json';
+        this.level_hash[LVL.B] = 'lvl/b_level.json';
+        this.level_hash[LVL.C] = 'lvl/c_level.json';
+        this.level_hash[LVL.D] = 'lvl/d_level.json';
+        this.level_hash[LVL.E] = 'lvl/e_level.json';
+
+        this.tile_hash[IMG.TILES_A] = 'img/tiles.png';
+        this.tile_hash[IMG.TILES_B] = 'img/tiles2.png';
+        this.tile_hash[IMG.TILES_C] = 'img/tiles3.png';
+    }
+
+    preload()
+    {
+        // random level and tiles
+        this.level = Utils.get_random_lvl();
+        this.map = Utils.get_random_tile_set();
+
+        this.load.tilemapTiledJSON(this.level, this.level_hash[this.level]);
+        this.load.image(this.map, this.tile_hash[this.map]);
     }
 
     create()
@@ -109,8 +132,8 @@ export default class GameScene extends Phaser.Scene
 
     create_map()
     {
-        const map = this.make.tilemap({ key: Utils.get_random_lvl() });
-        const tileset = map.addTilesetImage('tiles', Utils.get_random_tile_set());
+        const map = this.make.tilemap({ key: this.level });
+        const tileset = map.addTilesetImage('tiles', this.map);
         const platforms = map.createLayer('level', tileset, 0, 8);
         const bg = map.createLayer('bg', tileset, 0, 8);
         const fire = map.createLayer('danger', tileset, 0, 8);
