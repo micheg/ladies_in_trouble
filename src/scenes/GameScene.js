@@ -32,8 +32,6 @@ export default class GameScene extends Phaser.Scene
         // random level and tiles
         this.level = Utils.get_random_lvl();
         this.map = Utils.get_random_tile_set();
-        window.lvl = this.level;
-        window.tile = this.map;
 
         this.load.tilemapTiledJSON(this.level, this.level_hash[this.level]);
         this.load.image(this.map, this.tile_hash[this.map]);
@@ -41,7 +39,6 @@ export default class GameScene extends Phaser.Scene
 
     create()
     {
-        window.$T = this;
         // state
         this.game_over = false;
         this.audio_is_on = Utils.audio_is_on();
@@ -136,14 +133,12 @@ export default class GameScene extends Phaser.Scene
     create_map()
     {
         const map = this.make.tilemap({ key: this.level });
-        window.$map = map;
         const tileset = map.addTilesetImage('tiles', this.map);
         const platforms = map.createLayer('level', tileset, 0, 8);
         const bg = map.createLayer('bg', tileset, 0, 8);
         const fire = map.createLayer('danger', tileset, 0, 8);
         platforms.setCollisionByExclusion(-1, true);
         fire.setCollisionByExclusion(-1, true);
-        window.$P = platforms;
         return [platforms, fire];
     }
 
