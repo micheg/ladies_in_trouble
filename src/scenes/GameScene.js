@@ -32,6 +32,8 @@ export default class GameScene extends Phaser.Scene
         // random level and tiles
         this.level = Utils.get_random_lvl();
         this.map = Utils.get_random_tile_set();
+        window.lvl = this.level;
+        window.tile = this.map;
 
         this.load.tilemapTiledJSON(this.level, this.level_hash[this.level]);
         this.load.image(this.map, this.tile_hash[this.map]);
@@ -65,6 +67,7 @@ export default class GameScene extends Phaser.Scene
         // collision with platform
         this.physics.add.collider(this.player, platforms);
 
+        this.platforms = platforms;
         this.physics.add.collider(bee_group, platforms, (bee, platform) =>
         {
             if(bee.body.velocity.x >= 0)
@@ -119,7 +122,7 @@ export default class GameScene extends Phaser.Scene
         this.counter = 10;
         this.timer = this.time.addEvent(
         {
-            delay: 11000,
+            delay: 15000,
             callback: () =>
             {
                 this.re_enable_devil();
@@ -133,12 +136,14 @@ export default class GameScene extends Phaser.Scene
     create_map()
     {
         const map = this.make.tilemap({ key: this.level });
+        window.$map = map;
         const tileset = map.addTilesetImage('tiles', this.map);
         const platforms = map.createLayer('level', tileset, 0, 8);
         const bg = map.createLayer('bg', tileset, 0, 8);
         const fire = map.createLayer('danger', tileset, 0, 8);
         platforms.setCollisionByExclusion(-1, true);
         fire.setCollisionByExclusion(-1, true);
+        window.$P = platforms;
         return [platforms, fire];
     }
 
@@ -279,6 +284,16 @@ export default class GameScene extends Phaser.Scene
         {
             this.uodate_keybind();
             this.update_keycontrols();
+            // devil ia, if there is a hole he should jump
+            const x = (this.devil.body.velocity > 0) ? this.devil.x + 10 : this.devil.x - 10;
+            const tile = this.platforms.getTileAtWorldXY(x, this.devil.y + 15);
+            const should_jump = Phaser.Math.Between(0, 10);
+            // remove it from fire
+            if(tile === null && this.devil.body.onFloor() && should_jump > 3)
+            {
+                this.devil.setVelocityY(-200 + Phaser.Math.Between(0, 60));
+            }
+
             if(this.devil !== null && this.devil.y > 305)
             {
                 this.devil.disableBody(true, true);
