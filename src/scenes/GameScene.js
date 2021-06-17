@@ -19,10 +19,10 @@ export default class GameScene extends Phaser.Scene
         this.tile_hash = {};
         // hash maps
         this.level_hash[LVL.A] = 'lvl/level_a.json';
-        this.level_hash[LVL.B] = 'lvl/level_a.json';
-        this.level_hash[LVL.C] = 'lvl/level_a.json';
-        this.level_hash[LVL.D] = 'lvl/level_a.json';
-        this.level_hash[LVL.E] = 'lvl/level_a.json';
+        this.level_hash[LVL.B] = 'lvl/level_b.json';
+        this.level_hash[LVL.C] = 'lvl/level_c.json';
+        this.level_hash[LVL.D] = 'lvl/level_d.json';
+        this.level_hash[LVL.E] = 'lvl/level_e.json';
 
         this.tile_hash[IMG.TILES_A] = 'img/tiles.png';
         this.tile_hash[IMG.TILES_B] = 'img/tiles2.png';
