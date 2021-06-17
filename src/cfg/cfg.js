@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 
 export const WIDTH = 240;
 export const HEIGHT = 426;
@@ -23,7 +24,18 @@ export default
             debug: false
         }
     },
-    pixelArt: true
+    pixelArt: true,
+    plugins:
+    {
+        global:
+        [
+            {
+                key: 'rexVirtualJoystick',
+                plugin: VirtualJoystickPlugin,
+                start: true
+            }
+        ]
+    }
 };
 
 

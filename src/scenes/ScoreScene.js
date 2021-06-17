@@ -19,30 +19,8 @@ export default class ScoreScene extends Phaser.Scene
     create()
     {
         this.create_background();
-        // keybind
-        this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-
-        Utils.make_bottom_bar(this,
-        {
-            left_text: 'Menu',
-            left_scene: 'start-scene',
-            bottom_bar: true
-        });
+        Utils.exit_to_home_btn(this);
         this.create_scores_ui();
-    }
-
-    uodate_keybind()
-    {
-        if (this.leftButton.isDown)
-        {
-            this.scene.pause();
-            this.scene.start('start-scene');
-        }
-    }
-
-    update()
-    {
-        this.uodate_keybind();
     }
 
     create_scores_ui()
@@ -50,10 +28,10 @@ export default class ScoreScene extends Phaser.Scene
         this.add.bitmapText(CENTER_X, 20, IMG.FONT, 'Top Ten Scores', 30, 1).setOrigin(0.5, 0.5);
         let scores = Utils.scores_load();
         scores = scores.reverse();
-        const start_point = HEIGHT - 70;
+        const start_point = HEIGHT - 130;
         for(let i=0; i<scores.length; i++)
         {
-            this.add.bitmapText(CENTER_X, start_point - 20 *(i), IMG.FONT, scores[i].toString(), 20, 1).setOrigin(0.5, 0.5);
+            this.add.bitmapText(CENTER_X, start_point - 25 *(i), IMG.FONT, scores[i].toString(), 25, 1).setOrigin(0.5, 0.5);
         }
     }
 }

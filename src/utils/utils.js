@@ -53,6 +53,18 @@ module.audio_is_on = () =>
     return (audio === 'on');
 };
 
+module.get_pad_position = () =>
+{
+    const tmp = localStorage.getItem('pad');
+    // first time
+    if(tmp === null)
+    {
+        localStorage.setItem('pad', 'L');
+        return 'L'
+    }
+    return tmp;
+};
+
 module.make_bottom_hud = (scene, left=null, right=null) =>
 {
     // bottom black rectangle 16*width
@@ -203,7 +215,7 @@ module.get_random_player = () =>
 
 module.get_ads = (cb) =>
 {
-    cb();
+    setTimeout(cb, 2000);
 };
 
 module.put_exit_message = (scene) =>

@@ -23,7 +23,7 @@ export default class BootScene extends Phaser.Scene
             y: HEIGHT / 2 - 50,
             text: 'Loading...',
             style: {
-                font: '20px monospace',
+                font: '14px monospace',
                 fill: '#ffffff'
             }
         }).setOrigin(0.5, 0.5);

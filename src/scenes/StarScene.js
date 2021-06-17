@@ -13,16 +13,15 @@ export default class StartScene extends Phaser.Scene
 
     create()
     {
-        console.log("create");
         this.current_position = 0;
         // ui
         this.add.image(CENTER_X, CENTER_Y, IMG.SKY);
         this.logo = this.add.image(CENTER_X, 70, IMG.LOGO);
 
         const starting_point = CENTER_Y -40;
-        const increment = 50;
-        const labels = ['START', 'AUDIO ON', 'ABOUT', 'RULES', 'EXIT'];
-        const IDS = ['START', 'SOUND', 'ABOUT', 'RULES', 'EXIT'];
+        const increment = 44;
+        const labels = ['START', 'AUDIO ON', 'PAD LEFT', 'ABOUT', 'RULES', 'EXIT'];
+        const IDS = ['START', 'SOUND', 'PAD', 'ABOUT', 'RULES', 'EXIT'];
 
         this.btn = {};
         for( let i = 0 ; i < labels.length; i++)
@@ -41,12 +40,15 @@ export default class StartScene extends Phaser.Scene
         // read save data
         const audio = localStorage.getItem('audio');
         if(audio === 'off') this.btn.SOUND.text = 'AUDIO OFF';
+        const pad_dir = localStorage.getItem('pad');
+        if(pad_dir === 'R') this.btn.PAD.text = 'PAD RIGHT';
     }
 
     parse_action(action, btn)
     {
         let call_back = () =>
         {
+            let text = btn.text.replace('>', '').replace('<', '').trim();
             switch (action)
             {
                 case 'START':
@@ -61,17 +63,29 @@ export default class StartScene extends Phaser.Scene
                     this.scene.pause();
                     this.scene.start('intro-scene');
                     break;
+                case 'PAD':
+                    if(text === 'PAD LEFT')
+                    {
+                        localStorage.setItem('pad', 'R');
+                        btn.text = '> PAD RIGHT <';
+                    }
+                    else
+                    {
+                        localStorage.setItem('pad', 'L');
+                        btn.text = '> PAD LEFT <';
+                    }
+                    break;
                 case 'SOUND':
-                    let text = this.btn.SOUND.text.replace('>', '').replace('<', '').trim();
+                    //let text = this.btn.SOUND.text.replace('>', '').replace('<', '').trim();
                     if(text === 'AUDIO ON')
                     {
-                        this.btn.SOUND.text = '> AUDIO OFF <';
+                        btn.text = '> AUDIO OFF <';
                         localStorage.setItem('audio', 'off');
                         this.events.emit('snd.off');
                     }
                     else
                     {
-                        this.btn.SOUND.text = '> AUDIO ON <';
+                        btn.text = '> AUDIO ON <';
                         localStorage.setItem('audio', 'on');
                         this.events.emit('snd.on');
                     }                    
@@ -81,7 +95,6 @@ export default class StartScene extends Phaser.Scene
                     break;
             }
         }
-        if(this.prev_obj !== null) console.log("prev obj " + this.prev_obj + " text " + this.prev_obj.text || 'null');
         if(this.prev_obj !== null && this.prev_obj.text)
         {
             this.prev_obj.text = this.prev_obj.text.replace('>', '').replace('<', '').trim();

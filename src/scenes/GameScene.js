@@ -3,6 +3,8 @@ import { IMG, LVL, SND, spawn_point } from '../cfg/assets';
 import Utils from '../utils/utils';
 import Phaser from 'phaser'
 import BeeSpawner from '../utils/BeeSpawner';
+import VirtualJoystick from 'phaser3-rex-plugins/plugins/virtualjoystick.js';
+
 
 export default class GameScene extends Phaser.Scene
 {
@@ -110,11 +112,24 @@ export default class GameScene extends Phaser.Scene
         }, null, this);
 
         // input
-        this.cursors = this.input.keyboard.createCursorKeys();
-        // hud
+        // this.cursors = this.input.keyboard.createCursorKeys();
+
+        let pos = Utils.get_pad_position();
+
+        let y_cfg =
+        {
+            y: HEIGHT - 50,
+            x: (pos === 'L') ? 50 : WIDTH - 50,
+            radius: 40,
+            dir: '8dir',
+            forceMin: 16,
+            enable: true
+        };
+
+        let joystick = new VirtualJoystick(this, y_cfg);
+        this.cursors = joystick.createCursorKeys();
+        
         this.scene.launch('hud-scene');
-        this.create_kaios_menu();
-        this.create_kaios_keys();
 
         this.counter = 10;
         this.timer = this.time.addEvent(
@@ -155,34 +170,7 @@ export default class GameScene extends Phaser.Scene
     create_background()
     {
         this.add.image(CENTER_X, CENTER_Y, IMG.SKY);
-    }
-
-    create_kaios_menu()
-    {
-        // top header
-        this.add.rectangle(120, 9, 240, 19, 0x000000, 1);
-        // bottom hud
-        Utils.make_bottom_bar(this,
-        {
-            left_text: 'Menu',
-            left_scene: 'start-scene',
-            bottom_bar: false,
-            before_switch: () =>
-            {
-                this.scene.stop('hud-scene');
-            },
-            invisible: true
-        });
-        
-        this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-    }
-
-    create_kaios_keys()
-    {
-        this.kaios_keyboard = {};
-        this.kaios_keyboard.up = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO);
-        this.kaios_keyboard.left = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR);
-        this.kaios_keyboard.right = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SIX);
+        this.add.rectangle(CENTER_X, 9, WIDTH, 20, 0x000000);
     }
 
     add_coin()
@@ -235,25 +223,16 @@ export default class GameScene extends Phaser.Scene
         return player;
     }
 
-    uodate_keybind()
-    {
-        if (this.leftButton.isDown)
-        {
-            this.scene.stop('hud-scene');
-            this.scene.stop();
-            this.scene.start('start-scene');
-        }
-    }
-
     update_keycontrols()
     {
-        if (this.cursors.left.isDown || this.kaios_keyboard.left.isDown)
+        if(!this.cursors) return;
+        if( this.cursors.left.isDown )
         {
             this.player.setVelocityX(-PLAYER.SPEED.x);
             this.player.setFlipX(false);
             this.player.anims.play('walk', true);
         }
-        else if (this.cursors.right.isDown || this.kaios_keyboard.right.isDown)
+        else if( this.cursors.right.isDown )
         {
             this.player.setVelocityX(PLAYER.SPEED.x);
             this.player.setFlipX(true);
@@ -264,10 +243,7 @@ export default class GameScene extends Phaser.Scene
             this.player.setVelocityX(0);
             this.player.anims.play('turn');
         }
-        if(
-            (this.cursors.up.isDown && this.player.body.onFloor()) ||
-            (this.kaios_keyboard.up.isDown && this.player.body.onFloor())
-          )
+        if( this.cursors.up.isDown && this.player.body.onFloor() )
         {
             this.player.setVelocityY(-PLAYER.SPEED.y);
         }
@@ -277,7 +253,6 @@ export default class GameScene extends Phaser.Scene
     {
         if(!this.game_over)
         {
-            this.uodate_keybind();
             this.update_keycontrols();
             // devil ia, if there is a hole he should jump
             const x = (this.devil.body.velocity > 0) ? this.devil.x + 10 : this.devil.x - 10;
@@ -312,8 +287,9 @@ export default class GameScene extends Phaser.Scene
             this.player.setFlip(true, true);
         }
         this.game_over = true;
+        //this.cursors.destroy();
         this.add.bitmapText(CENTER_X, CENTER_Y, IMG.FONT, 'GAME OVER!', 40, 1).setOrigin(0.5, 0.5);
-        let timer = this.time.delayedCall(2000, this.game_over_action, null, this);
+        this.game_over_action();
     }
 
     hit_coin(player, coin)
@@ -375,7 +351,6 @@ export default class GameScene extends Phaser.Scene
         scores = scores.sort((a,b) =>  b-a);
         scores = scores.slice(0, 10);
         Utils.scores_save(scores);
-        //this.timer.destroy();
         Utils.get_ads(()=>
         {
             this.scene.stop();
