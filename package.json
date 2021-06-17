@@ -41,13 +41,6 @@
                 "watcherGlob": "**"
             },
             {
-                "staticPath": "src/manifest.webapp"
-            },
-            {
-                "staticPath": "src/ads/kaiads.v4.min.js",
-                "staticOutDir": "ads"
-            },
-            {
                 "staticPath": "src/build",
                 "watcherGlob": "**",
                 "staticOutDir": "build"
@@ -55,7 +48,6 @@
         ]
     },
     "externals": {
-        "ads/**/*": false,
         "build/**/*": false
     }
 }

@@ -16,11 +16,11 @@ export default class GameScene extends Phaser.Scene
         this.level_hash = {};
         this.tile_hash = {};
         // hash maps
-        this.level_hash[LVL.A] = 'lvl/a_level.json';
-        this.level_hash[LVL.B] = 'lvl/b_level.json';
-        this.level_hash[LVL.C] = 'lvl/c_level.json';
-        this.level_hash[LVL.D] = 'lvl/d_level.json';
-        this.level_hash[LVL.E] = 'lvl/e_level.json';
+        this.level_hash[LVL.A] = 'lvl/level_a.json';
+        this.level_hash[LVL.B] = 'lvl/level_a.json';
+        this.level_hash[LVL.C] = 'lvl/level_a.json';
+        this.level_hash[LVL.D] = 'lvl/level_a.json';
+        this.level_hash[LVL.E] = 'lvl/level_a.json';
 
         this.tile_hash[IMG.TILES_A] = 'img/tiles.png';
         this.tile_hash[IMG.TILES_B] = 'img/tiles2.png';
@@ -134,9 +134,9 @@ export default class GameScene extends Phaser.Scene
     {
         const map = this.make.tilemap({ key: this.level });
         const tileset = map.addTilesetImage('tiles', this.map);
-        const platforms = map.createLayer('level', tileset, 0, 8);
-        const bg = map.createLayer('bg', tileset, 0, 8);
-        const fire = map.createLayer('danger', tileset, 0, 8);
+        const platforms = map.createLayer('level', tileset, 0, 18);
+        const bg = map.createLayer('bg', tileset, 0, 18);
+        const fire = map.createLayer('danger', tileset, 0, 18);
         platforms.setCollisionByExclusion(-1, true);
         fire.setCollisionByExclusion(-1, true);
         return [platforms, fire];
@@ -160,7 +160,7 @@ export default class GameScene extends Phaser.Scene
     create_kaios_menu()
     {
         // top header
-        this.add.rectangle(120, 4, 240, 9, 0x000000, 1);
+        this.add.rectangle(120, 9, 240, 19, 0x000000, 1);
         // bottom hud
         Utils.make_bottom_bar(this,
         {
@@ -289,7 +289,7 @@ export default class GameScene extends Phaser.Scene
                 this.devil.setVelocityY(-200 + Phaser.Math.Between(0, 60));
             }
 
-            if(this.devil !== null && this.devil.y > 305)
+            if(this.devil !== null && this.devil.y > HEIGHT-15)
             {
                 this.devil.disableBody(true, true);
             }

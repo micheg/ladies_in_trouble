@@ -8,9 +8,7 @@ export default class StartScene extends Phaser.Scene
     constructor()
     {
         super('start-scene');
-        this.down_flag = false;
-        this.prev_obj = undefined;
-        this.alpha_inc = 0;
+        this.prev_obj = null;
     }
 
     create()
@@ -19,189 +17,87 @@ export default class StartScene extends Phaser.Scene
         this.current_position = 0;
         // ui
         this.add.image(CENTER_X, CENTER_Y, IMG.SKY);
-        this.star1 = this.add.image(CENTER_X - 100, CENTER_Y - 55, IMG.STAR);
-        this.star2 = this.add.image(CENTER_X + 100, CENTER_Y - 55, IMG.STAR);
         this.logo = this.add.image(CENTER_X, 70, IMG.LOGO);
 
-        let text_start = this.add.bitmapText(CENTER_X, CENTER_Y, IMG.FONT, 'START', 40, 1);
-        let text_config = this.add.bitmapText(CENTER_X, CENTER_Y + 50, IMG.FONT, 'AUDIO ON', 40, 1);
-        let text_exit = this.add.bitmapText(CENTER_X, CENTER_Y + 100, IMG.FONT, 'EXIT', 40, 1);
-        text_start.setOrigin(0.5, 0.5);
-        text_config.setOrigin(0.5, 0.5);
-        text_exit.setOrigin(0.5, 0.5);
-        this.text_config = text_config;
+        const starting_point = CENTER_Y -40;
+        const increment = 50;
+        const labels = ['START', 'AUDIO ON', 'ABOUT', 'RULES', 'EXIT'];
+        const IDS = ['START', 'SOUND', 'ABOUT', 'RULES', 'EXIT'];
 
-        this.positions =
-        [
-            {
-                y: CENTER_Y -5,
-                action: 'START',
-                obj: text_start,
-                anim: false
-            },
-            {
-                y: CENTER_Y + 45,
-                action: 'SOUND',
-                obj: text_config,
-                anim: false
-            },
-            {
-                y: CENTER_Y + 95,
-                action: 'EXIT',
-                obj: text_exit,
-                anim: false
-            }
-        ];
-
-        // keybind
-        this.startButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-        //this.leftButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-        //this.rightButton = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
-
-
-        //  Create our keyboard controls.
-        this.cursors = this.input.keyboard.addKeys(
+        this.btn = {};
+        for( let i = 0 ; i < labels.length; i++)
         {
-            leftKey: Phaser.Input.Keyboard.KeyCodes.LEFT,
-            rightKey: Phaser.Input.Keyboard.KeyCodes.RIGHT,
-            upKey: Phaser.Input.Keyboard.KeyCodes.UP,
-            downKey: Phaser.Input.Keyboard.KeyCodes.DOWN
-        });
-
-        Utils.make_bottom_bar(this,
-        {
-            left_text: 'About',
-            left_scene: 'about-scene',
-            right_text: 'Rules',
-            right_scene: 'intro-scene',
-            bottom_bar: true
-        });
-
+            let Y = starting_point + increment * i;
+            let label = (IDS[i] === 'START') ? '> START <' : labels[i];
+            this.btn[IDS[i]] = this.add.bitmapText(CENTER_X, Y,  IMG.FONT, label, 40, 1);
+            this.btn[IDS[i]].setOrigin(0.5, 0.5);
+            this.btn[IDS[i]].setInteractive();
+            this.btn[IDS[i]].on('pointerdown', () =>
+            {
+                this.parse_action(IDS[i], this.btn[IDS[i]]);
+            });
+        }
+        this.prev_obj = this.btn.START;
         // read save data
         const audio = localStorage.getItem('audio');
-        if(audio === 'off') this.text_config.text = 'AUDIO OFF';
+        if(audio === 'off') this.btn.SOUND.text = 'AUDIO OFF';
     }
 
-    uodate_keybind()
+    parse_action(action, btn)
     {
-        if (this.startButton.isDown)
+        let call_back = () =>
         {
-            this.down_flag = true;
-        }
-        else
-        {
-            if(this.down_flag)
+            switch (action)
             {
-                this.down_flag = false;
-                this.parse_enter();
-            }
-        }
-        /*if (this.leftButton.isDown)
-        {
-            this.scene.pause();
-            this.scene.start('about-scene');
-        }
-        else if (this.rightButton.isDown)
-        {
-            this.scene.pause();
-            this.scene.start('intro-scene');
-        }*/
-    }
-
-    update_keypad()
-    {
-        const { upKey, downKey } = this.cursors;
-        if (Phaser.Input.Keyboard.JustDown(upKey))
-        {
-            if(this.current_position == 0)
-            {
-                this.current_position = this.positions.length - 1;
-                return;
-            }
-            else
-            {
-                this.current_position -= 1;
-                return;
-            }
-        }
-        else if (Phaser.Input.Keyboard.JustDown(downKey))
-        {
-            if(this.current_position == this.positions.length - 1)
-            {
-                this.current_position = 0;
-                return;
-            }
-            else
-            {
-                this.current_position += 1;
-                return;
-            }
-        }
-    }
-    update_ui_menu()
-    {
-        this.star1.y = this.positions[this.current_position].y;
-        this.star2.y = this.positions[this.current_position].y;
-    }
-
-    cur_menu_tween()
-    {
-        let cur_obj = this.positions[this.current_position].obj;
-        for(let i=0; i<this.positions.length; i++)
-        {
-            if(i !== this.current_position)
-            {
-                this.positions[i].obj.alpha = 1;
-            }
-        }
-        if(cur_obj.alpha == 1)
-        {
-            this.alpha_inc = -0.05;
-        }
-        else if(cur_obj.alpha == 0)
-        {
-            this.alpha_inc = 0.05;
-        }
-        cur_obj.alpha += this.alpha_inc;
-    }
-
-    parse_enter()
-    {
-        const action = this.positions[this.current_position].action;
-        switch (action)
-        {
-            case 'START':
-                this.scene.pause();
-                this.scene.start('game-scene');
-                break;
-            case 'SOUND':
-                let text = this.text_config.text;
-                setTimeout(() =>
-                {
-                    this.text_config.text = (text === 'AUDIO ON') ? 'AUDIO OFF': 'AUDIO ON';
-                    const tmp = this.text_config.text;
-                    localStorage.setItem('audio', (tmp === 'AUDIO ON') ? 'on' : 'off');
-                    if(tmp === 'AUDIO ON')
+                case 'START':
+                    this.scene.pause();
+                    this.scene.start('game-scene');
+                    break;
+                case 'ABOUT':
+                    this.scene.pause();
+                    this.scene.start('about-scene');
+                    break;
+                case 'RULES':
+                    this.scene.pause();
+                    this.scene.start('intro-scene');
+                    break;
+                case 'SOUND':
+                    let text = this.btn.SOUND.text.replace('>', '').replace('<', '').trim();
+                    if(text === 'AUDIO ON')
                     {
-                        this.events.emit('snd.on');
+                        this.btn.SOUND.text = '> AUDIO OFF <';
+                        localStorage.setItem('audio', 'off');
+                        this.events.emit('snd.off');
                     }
                     else
                     {
-                        this.events.emit('snd.off');
-                    }
-                },10);
-                break;
-            case 'EXIT':
-                window.close();
-                break;
+                        this.btn.SOUND.text = '> AUDIO ON <';
+                        localStorage.setItem('audio', 'on');
+                        this.events.emit('snd.on');
+                    }                    
+                    break;
+                case 'EXIT':
+                    window.close();
+                    break;
+            }
         }
-    }
-
-    update()
-    {
-        this.uodate_keybind();
-        this.update_keypad();
-        this.update_ui_menu();
-        this.cur_menu_tween();
+        if(this.prev_obj !== null) console.log("prev obj " + this.prev_obj + " text " + this.prev_obj.text || 'null');
+        if(this.prev_obj !== null && this.prev_obj.text)
+        {
+            this.prev_obj.text = this.prev_obj.text.replace('>', '').replace('<', '').trim();
+        }
+        btn.text = '> ' + btn.text +  ' <';
+        this.prev_obj = btn;
+        this.add.tween(
+        {
+            targets: [btn],
+            alpha: { from: 0, to: 1 },
+            duration: 1000,
+            delay: 0,
+            onComplete: () =>
+            {
+                call_back();
+            }
+        });
     }
 }

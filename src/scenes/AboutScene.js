@@ -18,11 +18,6 @@ export default class AboutScene extends Phaser.Scene
         Utils.make_simple_title(this, 'About');
         Utils.make_scene_text(this, [msg1, msg2, msg3]);
 
-        Utils.make_bottom_bar(this,
-        {
-            right_text: 'Menu',
-            right_scene: 'start-scene',
-            bottom_bar: true
-        });
+        Utils.exit_to_home_btn(this);
     }
 }

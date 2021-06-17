@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 export const WIDTH = 240;
-export const HEIGHT = 320;
+export const HEIGHT = 426;
 
 // All configuration
 export default
@@ -47,6 +47,5 @@ export const GAME =
 
 export const INITIL_SCORES = [0,0,0,0,0,0,0,0,0,0];
 
-export const PID = {{PID_HERE}}
 export const APP_NAME = 'Ladies in a Box';
 export const SLOT = 'com.michelangelog.kaios.ladies';

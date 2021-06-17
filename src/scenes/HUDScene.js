@@ -41,11 +41,11 @@ export default class HUDScene extends Phaser.Scene
     create_labels (initial_value, initial_level)
     {
         const formatScore = (score) => `S C O R E :  ${score.toString().split('').join(' ')}`;
-        const score_label = new GenericLabel(this, 5, 0, initial_value, formatScore);
+        const score_label = new GenericLabel(this, 5, 5, initial_value, formatScore);
         this.add.existing(score_label);
 
         const format_level = (level) => `L E V E L :  ${level.toString().split('').join(' ')}`;
-        const level_label = new GenericLabel(this, 180, 0, initial_level, format_level);
+        const level_label = new GenericLabel(this, 160, 5, initial_level, format_level);
         this.add.existing(level_label);
 
         return [score_label, level_label];

@@ -154,16 +154,6 @@ module.make_simple_title = (scene, str) =>
     scene.add.image(CENTER_X, CENTER_Y, IMG.SKY);
     scene.add.image(CENTER_X, 50, IMG.STAR);
     let tmp = scene.add.bitmapText(CENTER_X, 100, IMG.FONT, str.toUpperCase(), 40).setOrigin(0.5, 0.5);
-
-    scene.add.tween(
-    {
-        targets: [tmp],
-        ease: (k) => (k < 0.5 ? 0 : 1),
-        duration: 250,
-        yoyo: true,
-        repeat: -1,
-        alpha: 0
-    });
 };
 
 module.make_scene_text = (scene, arr_of_str) =>
@@ -193,11 +183,11 @@ module.get_random_coin_position = (dir=null) =>
     }
     if( dir === 'L' )
     {
-        return module.rand([spawn_point[0], spawn_point[2]]);
+        return module.rand([spawn_point[0], spawn_point[2], spawn_point[4], spawn_point[6]]);
     }
     if( dir === 'R' )
     {
-        return module.rand([spawn_point[1], spawn_point[3]]);
+        return module.rand([spawn_point[1], spawn_point[3], spawn_point[5], spawn_point[7]]);
     }
 };
 
@@ -213,24 +203,7 @@ module.get_random_player = () =>
 
 module.get_ads = (cb) =>
 {
-    getKaiAd(
-    {
-        publisher: PID,
-        app: APP_NAME,
-        slot: SLOT,
-        test: window.build.test_mode,
-        timeout: 10*1000,
-        onerror: err =>
-        {
-            console.error('Custom catch:', err);
-            cb();
-        },
-        onready: ad =>
-        {
-            ad.call('display');
-            ad.on('close', cb)
-        }
-    });
+    cb();
 };
 
 module.put_exit_message = (scene) =>
@@ -245,6 +218,29 @@ module.remove_exit_message = (scene) =>
     if(window.r && window.r.destroy) window.r.destroy();
     if(window.b1 && window.b1.destroy) window.b1.destroy();
     if(window.b2 && window.b2.destroy) window.b2.destroy();
+};
+
+module.exit_to_home_btn = (scene) =>
+{
+    
+    const btn = scene.add.bitmapText(CENTER_X, CENTER_Y + 160,  IMG.FONT, 'MAIN MENU', 40, 1);
+    btn.setOrigin(0.5, 0.5);
+    btn.setInteractive();
+    btn.on('pointerdown', () =>
+    {
+        scene.add.tween(
+        {
+            targets: [btn],
+            alpha: { from: 0, to: 1 },
+            duration: 1000,
+            delay: 0,
+            onComplete: () =>
+            {
+                scene.scene.pause();
+                scene.scene.start('start-scene');
+            }
+        });
+    });
 };
 
 module.do_screen_shot = (scene) =>
