@@ -64,6 +64,7 @@ export default class GameScene extends Phaser.Scene
 
         // collision with platform
         this.physics.add.collider(this.player, platforms);
+        this.platforms = platforms;
 
         this.physics.add.collider(bee_group, platforms, (bee, platform) =>
         {
@@ -279,6 +280,16 @@ export default class GameScene extends Phaser.Scene
         {
             this.uodate_keybind();
             this.update_keycontrols();
+            // devil ia, if there is a hole he should jump
+            const x = (this.devil.body.velocity > 0) ? this.devil.x + 10 : this.devil.x - 10;
+            const tile = this.platforms.getTileAtWorldXY(x, this.devil.y + 15);
+            const should_jump = Phaser.Math.Between(0, 10);
+            // remove it from fire
+            if(tile === null && this.devil.body.onFloor() && should_jump > 3)
+            {
+                this.devil.setVelocityY(-200 + Phaser.Math.Between(0, 60));
+            }
+
             if(this.devil !== null && this.devil.y > 305)
             {
                 this.devil.disableBody(true, true);
