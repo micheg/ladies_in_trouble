@@ -213,24 +213,10 @@ module.get_random_player = () =>
 
 module.get_ads = (cb) =>
 {
-    getKaiAd(
+    setTimeout(()=>
     {
-        publisher: PID,
-        app: APP_NAME,
-        slot: SLOT,
-        test: window.build.test_mode,
-        timeout: 10*1000,
-        onerror: err =>
-        {
-            console.error('Custom catch:', err);
-            cb();
-        },
-        onready: ad =>
-        {
-            ad.call('display');
-            ad.on('close', cb)
-        }
-    });
+        cb();
+    }, 200);
 };
 
 module.put_exit_message = (scene) =>
