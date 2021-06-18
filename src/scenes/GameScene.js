@@ -8,6 +8,7 @@ export default class GameScene extends Phaser.Scene
 {
     constructor()
     {
+        console.log("game_scene_constructor");
         super('game-scene');
         this.player = undefined;
         this.cursors = undefined;
@@ -25,6 +26,7 @@ export default class GameScene extends Phaser.Scene
         this.tile_hash[IMG.TILES_A] = 'img/tiles.png';
         this.tile_hash[IMG.TILES_B] = 'img/tiles2.png';
         this.tile_hash[IMG.TILES_C] = 'img/tiles3.png';
+        window.$T = this;
     }
 
     preload()
@@ -212,7 +214,9 @@ export default class GameScene extends Phaser.Scene
     }
     create_player()
     {
+        console.log("create player");
         const key = Utils.get_random_player();
+        console.log("key is => " + key);
         const player = this.physics.add.sprite(30, HEIGHT-60, key);
         player.body.setSize(18,28,true);
         player.setBounce(0.2)
@@ -379,6 +383,8 @@ export default class GameScene extends Phaser.Scene
         //this.timer.destroy();
         Utils.get_ads(()=>
         {
+            this.anims.remove('walk');
+            this.anims.remove('turn');
             this.scene.stop();
             this.scene.start('score-scene');
         });
