@@ -43,19 +43,21 @@ export default class BootScene extends Phaser.Scene
         this.load.image(IMG.SKY, 'img/sky.png');
         this.load.image(IMG.STAR, 'img/g.png');
         this.load.image(IMG.LOGO, 'img/ladies_logo.png');
-        // loading is postponed when the level is created
-/*        
+
+        this.load.image(IMG.JOY_B, 'img/j_b.png');
+        this.load.image(IMG.JOY_U, 'img/j_u.png');
+        this.load.image('j_u', 'img/j_u.png');
+
+
         this.load.image(IMG.TILES_A, 'img/tiles.png');
         this.load.image(IMG.TILES_B, 'img/tiles2.png');
         this.load.image(IMG.TILES_C, 'img/tiles3.png');
-*/
-/*
-        this.load.tilemapTiledJSON(LVL.A, 'lvl/a_level.json');
-        this.load.tilemapTiledJSON(LVL.B, 'lvl/b_level.json');
-        this.load.tilemapTiledJSON(LVL.C, 'lvl/c_level.json');
-        this.load.tilemapTiledJSON(LVL.D, 'lvl/d_level.json');
-        this.load.tilemapTiledJSON(LVL.E, 'lvl/e_level.json');
-*/
+        this.load.tilemapTiledJSON(LVL.A, 'lvl/level_a.json');
+        this.load.tilemapTiledJSON(LVL.B, 'lvl/level_b.json');
+        this.load.tilemapTiledJSON(LVL.C, 'lvl/level_c.json');
+        this.load.tilemapTiledJSON(LVL.D, 'lvl/level_d.json');
+        this.load.tilemapTiledJSON(LVL.E, 'lvl/level_e.json');
+
 
         // player melissa
         this.load.spritesheet(IMG.PLAYER_A, 'img/player_a.png',

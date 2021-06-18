@@ -15,6 +15,8 @@ export const IMG =
     COIN: 'coin',
     BEE_A: 'bee_a',
     BEE_B: 'bee_B',
+    JOY_B: 'j_b',
+    JOY_U: 'j_u'
 };
 
 export const SND =

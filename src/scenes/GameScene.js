@@ -14,29 +14,6 @@ export default class GameScene extends Phaser.Scene
         this.player = undefined;
         this.cursors = undefined;
         this.devil = undefined;
-
-        this.level_hash = {};
-        this.tile_hash = {};
-        // hash maps
-        this.level_hash[LVL.A] = 'lvl/level_a.json';
-        this.level_hash[LVL.B] = 'lvl/level_b.json';
-        this.level_hash[LVL.C] = 'lvl/level_c.json';
-        this.level_hash[LVL.D] = 'lvl/level_d.json';
-        this.level_hash[LVL.E] = 'lvl/level_e.json';
-
-        this.tile_hash[IMG.TILES_A] = 'img/tiles.png';
-        this.tile_hash[IMG.TILES_B] = 'img/tiles2.png';
-        this.tile_hash[IMG.TILES_C] = 'img/tiles3.png';
-    }
-
-    preload()
-    {
-        // random level and tiles
-        this.level = Utils.get_random_lvl();
-        this.map = Utils.get_random_tile_set();
-
-        this.load.tilemapTiledJSON(this.level, this.level_hash[this.level]);
-        this.load.image(this.map, this.tile_hash[this.map]);
     }
 
     create()
@@ -111,10 +88,12 @@ export default class GameScene extends Phaser.Scene
             bee.destroy();
         }, null, this);
 
-        // input
-        // this.cursors = this.input.keyboard.createCursorKeys();
-
         let pos = Utils.get_pad_position();
+
+        const joy_base = this.add.image(-100, -100, IMG.JOY_B);
+        const joy_stick = this.add.image(-100, -100, IMG.JOY_U);
+        joy_base.alpha=0.4;
+        joy_stick.alpha=0.4;
 
         let y_cfg =
         {
@@ -123,7 +102,9 @@ export default class GameScene extends Phaser.Scene
             radius: 40,
             dir: '8dir',
             forceMin: 16,
-            enable: true
+            enable: true,
+            base: joy_base,
+            thumb: joy_stick
         };
 
         let joystick = new VirtualJoystick(this, y_cfg);
@@ -147,6 +128,9 @@ export default class GameScene extends Phaser.Scene
 
     create_map()
     {
+        // random level and tiles
+        this.level = Utils.get_random_lvl();
+        this.map = Utils.get_random_tile_set();
         const map = this.make.tilemap({ key: this.level });
         const tileset = map.addTilesetImage('tiles', this.map);
         const platforms = map.createLayer('level', tileset, 0, 18);

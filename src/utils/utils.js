@@ -189,17 +189,24 @@ module.get_random_tile_set = () =>
 
 module.get_random_coin_position = (dir=null) =>
 {
+    const pad_pos = module.get_pad_position();
+    let l_array = [spawn_point[0], spawn_point[2], spawn_point[4], spawn_point[6]];
+    let r_array =[spawn_point[1], spawn_point[3], spawn_point[5], spawn_point[7]];
     if( dir === null )
     {
         return module.rand(spawn_point);
     }
     if( dir === 'L' )
     {
-        return module.rand([spawn_point[0], spawn_point[2], spawn_point[4], spawn_point[6]]);
+        // remove pad pos coin spawn
+        if(pad_pos === 'L') l_array[3] = l_array[0]
+        return module.rand(l_array);
     }
     if( dir === 'R' )
     {
-        return module.rand([spawn_point[1], spawn_point[3], spawn_point[5], spawn_point[7]]);
+        // remove pad pos coin spawn
+        if(pad_pos === 'R') r_array[3] = r_array[0]
+        return module.rand(r_array);
     }
 };
 
