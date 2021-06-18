@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "description": "A simple game with phaserjs for kaios",
     "scripts": {
-        "dev": "parcel src/index.dev.html -p 8080",
-        "build_for_device": "parcel build src/index.device.html --out-dir dist --no-source-maps",
-        "build": "parcel build src/index.html --out-dir dist --no-source-maps",
-        "make_zip": "npm run build && touch ladies.zip && rm ladies.zip && cd dist && zip -r ../ladies.zip * && cd ..",
-        "deploy": "npm run build_for_device && mv dist/index.device.html dist/index.html && gdeploy install ./dist",
+        "setup": "parcel build src/index.html -d www",
+        "dev": "parcel src/index.dev.html -p 8080 -d www",
+        "app": "parcel build src/index.html -d www --no-source-maps && npx cap copy",
+        "build": "parcel build src/index.html --out-dir www --no-source-maps",
+        "apk": "npm run build && npx cap copy && cd android && ./gradlew assembleDebug && cd ..",
         "DS_Store_Clean": "find . -name \".DS_Store\" -delete"
     },
     "author": "micheg",
@@ -30,10 +30,14 @@
         "phaser3-rex-plugins": "^1.1.46"
     },
     "dependencies": {
+        "@capacitor/android": "^3.0.1",
+        "@capacitor/cli": "^3.0.1",
+        "@capacitor/core": "^3.0.1",
         "phaser": "^3.55.2"
     },
     "parcelCleanPaths": [
-        "dist"
+        "dist",
+        "www"
     ],
     "staticFiles": {
         "staticPath": [
