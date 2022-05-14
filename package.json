@@ -9,6 +9,7 @@
         "build": "parcel build src/index.html --out-dir www --no-source-maps",
         "apk_debug": "npm run build && npx cap copy && cd android && ./gradlew assembleDebug && cd ..",
         "apk_release": "npm run build && npx cap copy && cd android && ./gradlew assembleRelease && cd ..",
+        "run_android": "npm run build && npx cap run android",
         "DS_Store_Clean": "find . -name \".DS_Store\" -delete"
     },
     "author": "micheg",
