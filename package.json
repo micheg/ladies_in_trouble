@@ -7,7 +7,8 @@
         "dev": "parcel src/index.dev.html -p 8080 -d www",
         "app": "parcel build src/index.html -d www --no-source-maps && npx cap copy",
         "build": "parcel build src/index.html --out-dir www --no-source-maps",
-        "apk": "npm run build && npx cap copy && cd android && ./gradlew assembleDebug && cd ..",
+        "apk_debug": "npm run build && npx cap copy && cd android && ./gradlew assembleDebug && cd ..",
+        "apk_release": "npm run build && npx cap copy && cd android && ./gradlew assembleRelease && cd ..",
         "DS_Store_Clean": "find . -name \".DS_Store\" -delete"
     },
     "author": "micheg",
