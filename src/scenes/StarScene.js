@@ -92,6 +92,14 @@ export default class StartScene extends Phaser.Scene
                     break;
                 case 'EXIT':
                     window.close();
+                    try
+                    {
+                        exitApp();
+                    }
+                    catch (error)
+                    {
+                        console.error(error);
+                    }
                     break;
             }
         }

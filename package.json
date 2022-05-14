@@ -31,6 +31,7 @@
     },
     "dependencies": {
         "@capacitor/android": "^3.0.1",
+        "@capacitor/app": "^1.1.1",
         "@capacitor/cli": "^3.0.1",
         "@capacitor/core": "^3.0.1",
         "phaser": "^3.55.2"
