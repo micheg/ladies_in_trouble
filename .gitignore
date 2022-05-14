@@ -120,3 +120,11 @@ ladies.zip
 
 # osx
 .DS_Store
+
+# project others
+android/
+capacitor.config.json
+package-lock.json
+token.txt
+www/
+
